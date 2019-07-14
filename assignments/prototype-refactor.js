@@ -19,45 +19,48 @@ Prototype Refactor
 
 // These represent the character's size in the video game
 
-function GameObject(obj) {
-	this.createdAt = obj.createdAt;
-	this.name = obj.name;
-	this.dimensions = obj.dimensions;
+class GameObject {
+	constructor(obj) {
+		this.createdAt = obj.createdAt;
+		this.name = obj.name;
+		this.dimensions = obj.dimensions;
+	}
+	destroy() {
+		return `${this.name} was removed from the game!`;
+	}
 }
 
 // prototype method that returns: `${this.name} was removed from the game.`
-GameObject.prototype.destroy = function() {
-	return `${this.name} was removed from the game!`;
-};
 
-function CharacterStats(stats) {
-	GameObject.call(this, stats);
-	this.healthPoints = stats.healthPoints;
+class CharacterStats extends GameObject {
+	constructor(stats) {
+		super(stats);
+		this.healthPoints = stats.healthPoints;
+	}
+	takeDamage() {
+		return `${this.name} took damage!`;
+	}
 }
 
-CharacterStats.prototype = Object.create(GameObject.prototype);
-CharacterStats.prototype.takeDamage = function() {
-	return `${this.name} took damage!`;
-};
 // prototype method -> returns the string '<object name> took damage.'
 // should inherit destroy() from GameObject's prototype
 
-function Humanoid(human) {
+class Humanoid extends CharacterStats {
+	constructor(human) {
+		super(human);
+		this.team = human.team;
+		this.weapons = human.weapons;
+		this.language = human.language;
+	}
 	// Having an appearance or character resembling that of a human.
-	GameObject.call(this, human);
-	CharacterStats.call(this, human);
-	this.team = human.team;
-	this.weapons = human.weapons;
-	this.language = human.language;
+	greet() {
+		return `${this.name} offers a greeting in ${this.language}.`;
+	}
 }
 
-Humanoid.prototype = Object.create(CharacterStats.prototype);
-Humanoid.prototype.greet = function() {
-	return `${this.name} offers a greeting in ${this.language}.`;
-	// prototype method -> returns the string '<object name> offers a greeting in <object language>.'
-	// should inherit destroy() from GameObject through CharacterStats
-	// should inherit takeDamage() from CharacterStats
-};
+// prototype method -> returns the string '<object name> offers a greeting in <object language>.'
+// should inherit destroy() from GameObject through CharacterStats
+// should inherit takeDamage() from CharacterStats
 
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
